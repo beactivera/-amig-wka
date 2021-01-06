@@ -1,4 +1,4 @@
-# Lamiglowka
+# Łamigłówka
 Gra z zastosowaniem interfejsu graficznego 
 
 ### Skarby
