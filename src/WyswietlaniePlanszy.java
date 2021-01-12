@@ -14,8 +14,16 @@ class WyswietlaniePlanszy extends JFrame {
     JButton sprawdz = new JButton("Sprawdź");
     JPanel wyswietlanie = new JPanel();
     JPanel sterowanie = new JPanel();
-    JLabel title = new JLabel("Skarby:");
+    JLabel title = new JLabel("Skarby");
+    JLabel wybor = new JLabel("Wybierz gre:");
     JTextField t = new JTextField(10);
+    JButton gra1 = new JButton("1");
+    JButton gra2 = new JButton("2");
+    JButton gra3 = new JButton("3");
+    JButton gra4 = new JButton("4");
+    JButton gra5 = new JButton("5");
+    JButton gra6 = new JButton("6");
+
     WyswietlaniePlanszy() {
         int i, j;
         Container cp = getContentPane();
@@ -36,10 +44,18 @@ class WyswietlaniePlanszy extends JFrame {
 //        JPANEL - 'sterowanie' - użytkownik klika danych przycisk wywołując zmianę na planszy
         cp.add(sterowanie);
         sterowanie.setLayout(new GridLayout(10, 1));
-        sterowanie.add(t);
-        t.setFont(t.getFont().deriveFont(30.0f));
         sterowanie.add(title);
         sterowanie.add(new JLabel(""));
+        sterowanie.add(t);
+        sterowanie.add(new JLabel(""));
+        sterowanie.add(wybor);
+        sterowanie.add(new JLabel(""));
+        sterowanie.add(gra1);
+        sterowanie.add(gra2);
+        sterowanie.add(gra3);
+        sterowanie.add(gra4);
+        sterowanie.add(gra5);
+        sterowanie.add(gra6);
         sterowanie.add(new JLabel(""));
         sterowanie.add(new JLabel(""));
 //        TO DO: zapisanie gry do pliku
