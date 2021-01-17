@@ -1,13 +1,14 @@
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Plansza {
+public class Plansza implements Serializable {
 //    sprawdzanie czy liczba skarbow jest rowna liczbie na planszy
     int rozmiar_planszy = 5;
-    int x, y;
     boolean[][] tablica_gracza;
     int[][] tablica_rozwiazana;
     ArrayList<Ruch> listaRuchow = new ArrayList<>();
+    ArrayList<Ruch> listaCofnietychRuchow = new ArrayList<>();
 
     Plansza(){
         tablica_gracza = new boolean[rozmiar_planszy][rozmiar_planszy];
@@ -27,70 +28,17 @@ public class Plansza {
 
     }
 
-    void generujPlansze(){
+    void generujPlansze() {
 //        wpisac wartosci do danych pol
-        tablica_rozwiazana[0][2] = 2;
-        tablica_rozwiazana[1][1] = 3;
-        tablica_rozwiazana[1][3] = 4;
-        tablica_rozwiazana[3][0] = 2;
-        tablica_rozwiazana[3][1] = 3;
-        tablica_rozwiazana[3][2] = 4;
-        tablica_rozwiazana[3][3] = 2;
-//        --------------------------------------
-//            tab[0][2].setText("2");
-//            tab[1][1].setText("3");
-//            tab[1][3].setText("4");
-//            tab[3][0].setText("2");
-//            tab[3][1].setText("3");
-//            tab[3][2].setText("4");
-//            tab[3][3].setText("2");
-//        --------------------------------------
-//            tab[0][0] = new JButton("2");
-//            tab[0][3] = new JButton("1");
-//            tab[0][4] = new JButton("1");
-//            tab[1][2] = new JButton("3");
-//            tab[3][0] = new JButton("2");
-//            tab[3][2] = new JButton("4");
-//            tab[3][3] = new JButton("3");
-//            tab[3][4] = new JButton("1");
-//        ---------------------------------------
-//            tab[1][1] = new JButton("3");
-//            tab[1][2] = new JButton("3");
-//            tab[2][1] = new JButton("3");
-//            tab[2][4] = new JButton("3");
-//            tab[4][1] = new JButton("3");
-//            tab[4][2] = new JButton("2");
-//            tab[1][1] = new JButton("1");
-//        -----------------------------------------
-//              tab[0][0] = new JButton("2");
-//              tab[0][3] = new JButton("1");
-//              tab[1][2] = new JButton("3");
-//              tab[1][4] = new JButton("1");
-//              tab[2][1] = new JButton("4");
-//              tab[3][1] = new JButton("5");
-//              tab[4][1] = new JButton("3");
-//              tab[4][4] = new JButton("1");
-//        ------------------------------------------
-//            tab[0][3] = new JButton("2");
-//            tab[1][1] = new JButton("4");
-//            tab[1][2] = new JButton("4");
-//            tab[2][2] = new JButton("5");
-//            tab[2][4] = new JButton("4");
-//            tab[3][0] = new JButton("4");
-//            tab[4][2] = new JButton("3");
-//            tab[4][3] = new JButton("1");
-//            tab[4][4] = new JButton("1");
-//        --------------------------------------------
-//            tab[0][1] = new JButton("2");
-//            tab[0][3] = new JButton("2");
-//            tab[1][3] = new JButton("4");
-//            tab[2][0] = new JButton("1");
-//            tab[3][0] = new JButton("1");
-//            tab[3][1] = new JButton("3");
-//            tab[3][2] = new JButton("3");
-//            tab[3][4] = new JButton("1");
-//            tab[4][3] = new JButton("1");
-    };
+        tablica_rozwiazana[0][0] = 1;
+        tablica_rozwiazana[0][3] = 3;
+        tablica_rozwiazana[1][1] = 4;
+        tablica_rozwiazana[2][2] = 3;
+        tablica_rozwiazana[2][3] = 5;
+        tablica_rozwiazana[4][1] = 2;
+        tablica_rozwiazana[4][3] = 3;
+        tablica_rozwiazana[4][4] = 1;
+    }
 
     boolean sprawdzaniePLanszy(){
 //        znalezienie liczb w tablicy
@@ -140,6 +88,8 @@ public class Plansza {
 //        dodaj to listy Ruchow
         tablica_gracza[x][y] = true;
         listaRuchow.add(new Ruch(x,y));
+        listaCofnietychRuchow.clear();
+//        System.out.println("dodano ruch" + x +","+ y);
     };
 
     boolean czyJestSkarb(int x, int y){
@@ -152,13 +102,22 @@ public class Plansza {
 //        spojrzec na ostatni ruch z listy ruchow
         if(listaRuchow.isEmpty()== false){
             Ruch ruch = listaRuchow.get(listaRuchow.size()-1);
+            listaCofnietychRuchow.add(ruch);
             tablica_gracza[ruch.x][ruch.y] = false;
             listaRuchow.remove(listaRuchow.size() -1);
         }
+//        System.out.println(listaRuchow.size());
 
     }
 
-
+    void ponowRuch(){
+        if(listaCofnietychRuchow.isEmpty()== false){
+            Ruch ruch = listaCofnietychRuchow.get(listaCofnietychRuchow.size()-1);
+            tablica_gracza[ruch.x][ruch.y] = true;
+            listaCofnietychRuchow.remove(listaCofnietychRuchow.size()-1);
+            listaRuchow.add(ruch);
+        }
+    }
 
 }
 

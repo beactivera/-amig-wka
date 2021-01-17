@@ -1,7 +1,9 @@
 import javax.swing.*;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.lang.*;
 
 class WyswietlaniePlanszy extends JFrame {
@@ -12,17 +14,13 @@ class WyswietlaniePlanszy extends JFrame {
     JButton redo = new JButton("Redo");
     JButton undo = new JButton("Undo");
     JButton sprawdz = new JButton("Sprawdź");
+    JButton wczytaj = new JButton("Wczytaj grę");
     JPanel wyswietlanie = new JPanel();
     JPanel sterowanie = new JPanel();
-    JLabel title = new JLabel("Skarby");
-    JLabel wybor = new JLabel("Wybierz gre:");
+    JLabel title = new JLabel("SKARBY");
+    JLabel instrukcja = new JLabel("Instrukcja:");
+    JLabel  link = new JLabel("www.math.edu.pl/skarby");
     JTextField t = new JTextField(10);
-    JButton gra1 = new JButton("1");
-    JButton gra2 = new JButton("2");
-    JButton gra3 = new JButton("3");
-    JButton gra4 = new JButton("4");
-    JButton gra5 = new JButton("5");
-    JButton gra6 = new JButton("6");
 
     WyswietlaniePlanszy() {
         int i, j;
@@ -38,6 +36,7 @@ class WyswietlaniePlanszy extends JFrame {
             for (j = 0; j < 5; j++) {
                 tab[i][j] = new JButton("");
                 wyswietlanie.add(tab[i][j]);
+                (tab[i][j]).addActionListener(new Zaznacz(i, j));
             }
         };
         wyswietlPlansze();
@@ -46,25 +45,21 @@ class WyswietlaniePlanszy extends JFrame {
         sterowanie.setLayout(new GridLayout(10, 1));
         sterowanie.add(title);
         sterowanie.add(new JLabel(""));
-        sterowanie.add(t);
-        sterowanie.add(new JLabel(""));
-        sterowanie.add(wybor);
-        sterowanie.add(new JLabel(""));
-        sterowanie.add(gra1);
-        sterowanie.add(gra2);
-        sterowanie.add(gra3);
-        sterowanie.add(gra4);
-        sterowanie.add(gra5);
-        sterowanie.add(gra6);
+        sterowanie.add(instrukcja);
+        sterowanie.add(link);
         sterowanie.add(new JLabel(""));
         sterowanie.add(new JLabel(""));
-//        TO DO: zapisanie gry do pliku
-        sterowanie.add(zapisz);
-        zapisz.addActionListener(new Zapisz());
-//        TO DO - redo, cofnać cofnięcie?
         sterowanie.add(redo);
+        redo.addActionListener(new Ponow());
         sterowanie.add(undo);
         undo.addActionListener(new Cofnij());
+        sterowanie.add(wczytaj);
+        wczytaj.addActionListener(new Wczytaj());
+        sterowanie.add(zapisz);
+        zapisz.addActionListener(new Zapisz());
+        sterowanie.add(new JLabel(""));
+        sterowanie.add(new JLabel(""));
+        sterowanie.add(t);
         sterowanie.add(sprawdz);
         sprawdz.addActionListener(new Sprawdzenie());
 
@@ -94,7 +89,6 @@ class WyswietlaniePlanszy extends JFrame {
                     (tab[i][j]).setBackground(null);
                 }
                 wyswietlanie.add(tab[i][j]);
-                (tab[i][j]).addActionListener(new Zaznacz(i, j));
             }
         }
     };
@@ -117,10 +111,10 @@ class WyswietlaniePlanszy extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
           if(plansza.sprawdzaniePLanszy()== true){
-              t.setText("Wygrales :)");
+              t.setText("Dobrze!");
           }
           else{
-              t.setText("Przegrales :(");
+              t.setText("Źle.Spróbuj ponownie!");
           }
         }
     }
@@ -132,26 +126,50 @@ class WyswietlaniePlanszy extends JFrame {
         }
     }
 
+    class Ponow implements ActionListener {
+        public void actionPerformed(ActionEvent e){
+            plansza.ponowRuch();
+            wyswietlPlansze();
+        }
+    }
+
     class Zapisz implements ActionListener {
         public void actionPerformed(ActionEvent e){
+            try{
+                String nazwa = JOptionPane.showInputDialog("Podaj nazwę pliku: ");
+                FileOutputStream fOut = new FileOutputStream("src/Dane/"+nazwa);
+                ObjectOutputStream objOut = new ObjectOutputStream(fOut);
+                objOut.writeObject(plansza);
+                objOut.close();
+                fOut.close();
+                t.setText("Zapisano poprawnie!");
+            }
+            catch(IOException ioException){
+                t.setText("Nie powiodło się zapisanie!");
             }
         }
-
+    }
 
     class Wczytaj implements ActionListener {
         public void actionPerformed(ActionEvent e){
-
+            try{
+                String nazwa = JOptionPane.showInputDialog("Podaj nazwę pliku: ");
+                FileInputStream fIn = new FileInputStream("src/Dane/"+nazwa);
+                ObjectInputStream objIn = new ObjectInputStream(fIn);
+                plansza = (Plansza) objIn.readObject();
+                objIn.close();
+                fIn.close();
+                t.setText("Wczytano dane.");
+                wyswietlPlansze();
+            }
+            catch(IOException | ClassNotFoundException i){
+                t.setText("Nie powiodło się wczytywanie!");
             }
         }
-
+    }
+    
 }
 
-// gra SKARBY
-// plansza przyciskow 5 x 5 - wpisujemy liczby w niektore pola - blokujemy do nich dostep aby nie mozna bylo ich zmienic
-// pozostale miejsca sa aktywne do klikniecia, kazde zaznaczenie wiaze sie z pokolorowaniem pola na zielona i wstawienie X
-// kiedy dokonujemy sprawdzenia - to wertujemy przez przyciski, szukamy tych zablokowanych i zliczamy ile jest sasiadujacych zielonych przyciskow
-// jak liczba tych pol i cyfra na zablokowanych przyciskach jest sobie rowne to znaczy ze zostala gra rozwiazana poprawnie - sprawdzenie kazdego takiego pola?
-// + zapisywanie do pliku historii, zczytywanie historii, poruszanie sie w przod i tyl, komentarze o rozwiazaniu
-// wczytywanie roznych planszy?
+
 
 
